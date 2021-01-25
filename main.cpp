@@ -98,10 +98,11 @@ int main()
 
         one.use();
         glBindVertexArray(VAO[0]);
-        /**
+
         auto time = static_cast<float>(glfwGetTime());
         float green = std::sin(time) / 2 + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "OurColor");
+        one.setFloat("offset", green);
+        /**int vertexColorLocation = glGetUniformLocation(shaderProgram, "OurColor");
         glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 0.0f);
         */
         glDrawArrays(GL_TRIANGLES, 0, 3);
