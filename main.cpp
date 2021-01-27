@@ -13,6 +13,8 @@ void processInput(GLFWwindow* window);
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
 
+float visibility = 0.2f;
+
 int main()
 {
     glfwInit();
@@ -41,9 +43,9 @@ int main()
     Shader two("../shaders/shader.vsh", "../shaders/second.fsh");
 
     float vertices[] = {
-            -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f
+            -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.f, 1.f,
+            0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.f, 0.f,
+            0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.f, 0.f
     };
     float secondVert[] = {
             -0.5f, 0.0f, 0.0f,
@@ -94,10 +96,10 @@ int main()
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     int width, height, channels;
     unsigned char* data = stbi_load("../container.jpg", &width, &height, &channels, 0);
@@ -148,6 +150,7 @@ int main()
         auto time = static_cast<float>(glfwGetTime());
         float green = std::sin(time) / 2 + 0.5f;
         one.setFloat("offset", green);
+        one.setFloat("vis", visibility);
         /**int vertexColorLocation = glGetUniformLocation(shaderProgram, "OurColor");
         glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 0.0f);
         */
@@ -177,5 +180,21 @@ void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        visibility += 0.01f;
+        if (visibility > 1.f)
+        {
+            visibility = 1.f;
+        }
+    }
+    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        visibility -= 0.01f;
+        if (visibility < 0.f)
+        {
+            visibility = 0.f;
+        }
     }
 }
