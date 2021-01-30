@@ -40,36 +40,32 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     Shader one("../shaders/shader.vsh", "../shaders/shader.fsh");
-    Shader two("../shaders/shader.vsh", "../shaders/second.fsh");
 
     float vertices[] = {
-            -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.f, 1.f,
-            0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.f, 0.f,
-            0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.f, 0.f
+            -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.f, 1.f,
+            0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.f, 1.f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.f, 0.f,
+            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.f, 0.f
     };
-    float secondVert[] = {
-            -0.5f, 0.0f, 0.0f,
-            0.5f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.0f
-    };
+
     unsigned int indices[] = {
             0, 1, 2,
             1, 2, 3
     };
 
-    unsigned int VAO[2], VBO[2], EBO;
-    glGenVertexArrays(2, VAO);
-    glGenBuffers(2, VBO);
-    //glGenBuffers(1, &EBO);
+    unsigned int VAO, VBO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
 
-    glBindVertexArray(VAO[0]);
+    glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
@@ -78,19 +74,7 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    glBindVertexArray(VAO[1]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(secondVert), secondVert, GL_STATIC_DRAW);
-
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 
     unsigned int texture;
     glGenTextures(1, &texture);
@@ -145,7 +129,7 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         one.use();
-        glBindVertexArray(VAO[0]);
+        glBindVertexArray(VAO);
 
         auto time = static_cast<float>(glfwGetTime());
         float green = std::sin(time) / 2 + 0.5f;
@@ -154,18 +138,15 @@ int main()
         /**int vertexColorLocation = glGetUniformLocation(shaderProgram, "OurColor");
         glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 0.0f);
         */
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        two.use();
-        glBindVertexArray(VAO[1]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwPollEvents();
         glfwSwapBuffers(window);
     }
 
-    glDeleteVertexArrays(2, VAO);
-    glDeleteBuffers(2, VBO);
-    //glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
     return 0;
