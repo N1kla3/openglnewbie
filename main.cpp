@@ -1,6 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <cmath>
@@ -8,7 +11,6 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
 // settings
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
@@ -128,16 +130,31 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
+        glm::mat4 matrix(1.0f);
+        matrix = glm::translate(matrix, glm::vec3(0.5f, -0.5f, 0.0f));
+        matrix = glm::rotate(matrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+
+
         one.use();
+        one.setMat4("transform", matrix);
         glBindVertexArray(VAO);
 
         auto time = static_cast<float>(glfwGetTime());
-        float green = std::sin(time) / 2 + 0.5f;
+        float green = 1.f; //std::sin(time) / 2 + 0.5f;
         one.setFloat("offset", green);
         one.setFloat("vis", visibility);
         /**int vertexColorLocation = glGetUniformLocation(shaderProgram, "OurColor");
         glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 0.0f);
         */
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glm::mat4 scaler(1.0f);
+        scaler = glm::translate(scaler, glm::vec3(-0.5f, 0.5f, 0.0f));
+        auto scale = sin(glfwGetTime());
+        scaler = glm::scale(scaler, glm::vec3(scale, scale, scale));
+        one.setMat4("transform", scaler);
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwPollEvents();
