@@ -89,6 +89,19 @@ int main()
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
+    glm::vec3 cubePositions[] = {
+            glm::vec3( 0.0f,  0.0f,  0.0f),
+            glm::vec3( 2.0f,  5.0f, -15.0f),
+            glm::vec3(-1.5f, -2.2f, -2.5f),
+            glm::vec3(-3.8f, -2.0f, -12.3f),
+            glm::vec3( 2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f,  3.0f, -7.5f),
+            glm::vec3( 1.3f, -2.0f, -2.5f),
+            glm::vec3( 1.5f,  2.0f, -2.5f),
+            glm::vec3( 1.5f,  0.2f, -1.5f),
+            glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
     unsigned int indices[] = {
             0, 1, 2,
             1, 2, 3
@@ -173,7 +186,6 @@ int main()
         matrix = glm::translate(matrix, glm::vec3(0.5f, -0.5f, 0.0f));
         matrix = glm::rotate(matrix, (float)glfwGetTime(), glm::vec3(1.0f, 0.5f, 0.0f));
 
-
         one.use();
         one.setMat4("transform", matrix);
         glBindVertexArray(VAO);
@@ -198,13 +210,16 @@ int main()
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glm::mat4 scaler(1.0f);
-        scaler = glm::translate(scaler, glm::vec3(-0.5f, 0.5f, 0.0f));
-        auto scale = sin(glfwGetTime());
-        scaler = glm::scale(scaler, glm::vec3(scale, scale, scale));
-        one.setMat4("transform", scaler);
+        for (auto i = 0; i < 10; i++)
+        {
+            glm::mat4 local_model(1.0f);
+            local_model = glm::translate(local_model, cubePositions[i]);
+            float angle = 20.f;
+            local_model = glm::rotate(local_model, angle * i, glm::vec3(0.2f, 0.4f, 0.6f));
+            one.setMat4("model", local_model);
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         glfwPollEvents();
         glfwSwapBuffers(window);
