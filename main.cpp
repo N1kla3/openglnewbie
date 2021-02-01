@@ -144,6 +144,16 @@ int main()
         float green = 1.f; //std::sin(time) / 2 + 0.5f;
         one.setFloat("offset", green);
         one.setFloat("vis", visibility);
+
+        glm::mat4 model(1.0f);
+        glm::mat4 view(1.0f);
+        glm::mat4 projection(1.0f);
+        model = glm::rotate(model, glm::radians(-55.f), glm::vec3(1.f, 0.f, 0.f));
+        view = glm::translate(view, glm::vec3(0.f, 0.f, -3.f));
+        projection = glm::perspective(glm::radians(45.f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.f);
+        one.setMat4("model", model);
+        one.setMat4("view", view);
+        one.setMat4("projection", projection);
         /**int vertexColorLocation = glGetUniformLocation(shaderProgram, "OurColor");
         glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 0.0f);
         */
