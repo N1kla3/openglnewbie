@@ -17,6 +17,13 @@ const int SCR_HEIGHT = 600;
 
 float visibility = 0.2f;
 
+float deltaTime = 0.f;
+float lastFrame = 0.f;
+
+glm::vec3 cameraPos(0.f, 0.f, 3.f);
+glm::vec3 cameraFront(0.f, 0.f, -1.f);
+glm::vec3 cameraUp(0.f, 1.f, 0.f);
+
 int main()
 {
     glfwInit();
@@ -102,12 +109,12 @@ int main()
             glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-    unsigned int indices[] = {
+    GLuint indices[] = {
             0, 1, 2,
             1, 2, 3
     };
 
-    unsigned int VAO, VBO, EBO;
+    GLuint VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     //glGenBuffers(1, &EBO);
@@ -172,6 +179,9 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
+        float current_time = glfwGetTime();
+        deltaTime = current_time - lastFrame;
+        lastFrame = current_time;
         processInput(window);
 
         glClearColor(0.4f, 0.5f, 0.7f, 0.5f);
@@ -191,10 +201,7 @@ int main()
         glBindVertexArray(VAO);
 
         glm::mat4 look_at(1.f);
-        float radius = 10.f;
-        float camX = (float)sin(glfwGetTime()) * radius;
-        float camZ = (float)cos(glfwGetTime()) * radius;
-        look_at = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
+        look_at = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         one.setMat4("view", look_at);
 
         one.setFloat("vis", visibility);
@@ -257,4 +264,13 @@ void processInput(GLFWwindow *window) {
             visibility = 0.f;
         }
     }
+    const float speed = 2.5f * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += speed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= speed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraUp, cameraFront)) * speed;
 }
