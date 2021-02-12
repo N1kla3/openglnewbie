@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "Shader.h"
 #include <glm/vec3.hpp>
 
-enum CAMERA_MOVEMENT
+enum class CAMERA_MOVEMENT
 {
     MOVE_FORWARD,
     MOVE_BACK,
@@ -24,7 +25,7 @@ constexpr float ZOOM = 45.f;
 class Camera
 {
 public:
-    Camera(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f),
+    explicit Camera(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f),
            glm::vec3 up = glm::vec3(0.f, 1.f, 0.f),
            float yaw = YAW, float pitch = PITCH);
     Camera(float posx, float posy, float posz,
@@ -32,6 +33,11 @@ public:
            float yaw  = YAW, float pitch = PITCH);
 
     virtual ~Camera() = default;
+
+    [[nodiscard]] glm::mat4 GetViewMatrix() const;
+    void ProcessKeyboard(CAMERA_MOVEMENT direction, float deltaTime);
+    void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
+    void ProcessMouseScroll(float yOffset);
 
     glm::vec3 position;
     glm::vec3 front;
@@ -45,6 +51,7 @@ public:
     float movement_speed;
     float mouse_sensitivity;
     float zoom;
-protected:
+
 private:
+    void UpdateCameraVectors();
 };
