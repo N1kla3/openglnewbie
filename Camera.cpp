@@ -9,6 +9,7 @@
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
     : position(position),
       up(up),
+      world_up(up),
       yaw(yaw),
       pitch(pitch),
       front(glm::vec3(0.f, 0.f, -1.f)),
@@ -18,9 +19,11 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
 {
     UpdateCameraVectors();
 }
+
 Camera::Camera(float posx, float posy, float posz, float upx, float upy, float upz, float yaw, float pitch)
     : position(posx, posy, posz),
       up(upx, upy, upz),
+      world_up(upx, upy, upz),
       yaw(yaw),
       pitch(pitch),
       front(glm::vec3(0.f, 0.f, -1.f)),

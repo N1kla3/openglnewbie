@@ -15,7 +15,7 @@ enum class CAMERA_MOVEMENT
     MOVE_LEFT
 };
 
-constexpr float YAW = 90.f;
+constexpr float YAW = -90.f;
 constexpr float PITCH = 0.f;
 constexpr float SPEED = 2.5f;
 constexpr float SENSITIVITY = 0.1f;
