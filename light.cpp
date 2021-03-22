@@ -123,6 +123,8 @@ int main()
 
     GLuint lightVAO;
     glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) nullptr);
@@ -142,6 +144,7 @@ int main()
         cube.setVec3("lightColor", glm::vec3(0.33, 0.44, 0.44));
         cube.setVec3("objectColor", glm::vec3(0.63, 0.74, 0.33));
         cube.setVec3("lightPos", lightPos);
+        cube.setVec3("viewPos", camera.position);
 
         glm::mat4 look_at(1.f);
         look_at = camera.GetViewMatrix();
@@ -159,7 +162,7 @@ int main()
         light.use();
         light.setMat4("view", look_at);
         light.setMat4("projection", projection);
-        model = glm::translate(model, glm::vec3(4.f, 5.f, 6.f));
+        model = glm::translate(model, glm::vec3(1.f, 1.f, 1.f));
         model = glm::scale(model, glm::vec3(0.2f));
         light.setMat4("model", model);
         glBindVertexArray(lightVAO);
@@ -170,6 +173,7 @@ int main()
     }
 
     glDeleteVertexArrays(1, &VAO);
+    glDeleteVertexArrays(1, &lightVAO);
     glDeleteBuffers(1, &VBO);
 
     glfwTerminate();
